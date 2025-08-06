@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.HotelBookingApp.DTO.HotelDTO;
 import com.example.HotelBookingApp.DTO.RoomDTO;
 import com.example.HotelBookingApp.Service.UserService;
+import com.example.HotelBookingApp.model.Rooms;
 import com.example.HotelBookingApp.model.Users;
 
 @RestController
@@ -49,5 +50,17 @@ public class UserController {
 	public ResponseEntity<RoomDTO> getRoom(@PathVariable Long id) throws NotFoundException{
 		RoomDTO roomDetails =userService.getRoom(id);
 		return new ResponseEntity<>(roomDetails, HttpStatus.OK);
+	}
+	
+	@GetMapping("/bookRoom/{hotel_id}/{room_id}")
+	public ResponseEntity<?> bookRoom(@PathVariable Long hotel_id, @PathVariable Long room_id) throws NotFoundException{
+		 String bookingUpdate = userService.bookRoom(hotel_id, room_id);
+		return new ResponseEntity<>( bookingUpdate, HttpStatus.OK);
+	}
+	
+	@GetMapping("/availableRoom/{hotel_id}")
+	public ResponseEntity<List<Rooms>> availableRoomInHotel(@PathVariable Long hotel_id){
+		List<Rooms> availableRooms = userService.availableRoomInHotel(hotel_id);
+		return new ResponseEntity<>(availableRooms, HttpStatus.OK);
 	}
 }

@@ -1,5 +1,6 @@
 package com.example.HotelBookingApp.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,88 +21,114 @@ import com.example.HotelBookingApp.model.Users;
 @Service
 public class UserService {
 
-	@Autowired 
+	@Autowired
 	UserRepository userRepo;
-	
+
 	@Autowired
 	HotelRepository hotelRepo;
-	
+
 	@Autowired
 	RoomsRepo roomRepo;
-	
+
 	public Users register(Users user) {
 		userRepo.save(user);
 		return user;
 	}
 
 	public List<HotelDTO> viewAllHotels() {
-		
-		 List<Hotels> hotels = hotelRepo.findAll();
-		 return hotels.stream()
-				 .map(hotel -> new HotelDTO(
-						 hotel.getName(),
-						 hotel.getDescription(),
-						 hotel.getAddress(),
-						 hotel.getCity(),
-						 hotel.getRating())
-						 )
-				 .collect(Collectors.toList());
+
+		List<Hotels> hotels = hotelRepo.findAll();
+		return hotels.stream().map(hotel -> new HotelDTO(
+				hotel.getName(),
+				hotel.getDescription(),
+				hotel.getAddress(),
+				hotel.getCity(), 
+				hotel.getRating()))
+				.collect(Collectors.toList());
 	}
 
 	public List<RoomDTO> getAllRooms(Long hotel_id) throws NotFoundException {
-	    Optional<List<Rooms>> rooms = roomRepo.findAllByHotelId(hotel_id);
+		Optional<List<Rooms>> rooms = roomRepo.findAllByHotelId(hotel_id);
 
-	    if (rooms.isEmpty()) {
-	        throw new NotFoundException();
-	    }
+		if (rooms.isEmpty()) {
+			throw new NotFoundException();
+		}
 
-	    List<Rooms> hotelRooms = rooms.get();
+		List<Rooms> hotelRooms = rooms.get();
 
-	    return hotelRooms.stream().map(room -> {
-	        Hotels hotel = room.getHotel();
+		return hotelRooms.stream().map(room -> {
+			Hotels hotel = room.getHotel();
 
-	        HotelDTO hotelDTO = new HotelDTO(
-	            hotel.getName(),
-	            hotel.getAddress(),
-	            hotel.getDescription(),
-	            hotel.getCity(),
-	            hotel.getRating()
-	        );
+			HotelDTO hotelDTO = new HotelDTO(
+					hotel.getName(),
+					hotel.getAddress(),
+					hotel.getDescription(),
+					hotel.getCity(),
+					hotel.getRating());
 
-	        return new RoomDTO(
-	            room.getId(),
-	            hotelDTO,
-	            room.getType(),
-	            room.getDescription(),
-	            room.getPrice(),
-	            room.getMaxGuests(),
-	            room.getAmenities(),
-	            room.getIsAvailable()
-	        );
-	    }).collect(Collectors.toList());
+			return new RoomDTO(
+					room.getId(), 
+					hotelDTO,
+					room.getType(), 
+					room.getDescription(),
+					room.getPrice(),
+					room.getMaxGuests(), 
+					room.getAmenities(),
+					room.getIsAvailable());
+			}).collect(Collectors.toList());
 	}
 
 	public RoomDTO getRoom(Long id) throws NotFoundException {
-	Rooms roomDetails = roomRepo.findById(id).orElseThrow(()->new NotFoundException());
-	Hotels hotel = roomDetails.getHotel();
-		HotelDTO hotelDTO =new HotelDTO(
-				hotel.getName(),
-				hotel.getAddress(),
+		Rooms roomDetails = roomRepo.findById(id).orElseThrow(() -> new NotFoundException());
+		Hotels hotel = roomDetails.getHotel();
+		HotelDTO hotelDTO = new HotelDTO(
+				hotel.getName(), 
+				hotel.getAddress(), 
 				hotel.getDescription(),
 				hotel.getCity(),
 				hotel.getRating());
-	
-	return new RoomDTO(
-			roomDetails.getId(),
-			hotelDTO,
-			roomDetails.getType(),
-			roomDetails.getDescription(),
-			roomDetails.getPrice(),
-			roomDetails.getMaxGuests(),
-			roomDetails.getAmenities(),
-			roomDetails.getIsAvailable());
-	
-			
 
-}
+		return new RoomDTO(
+				roomDetails.getId(),
+				hotelDTO,
+				roomDetails.getType(),
+				roomDetails.getDescription(),
+				roomDetails.getPrice(),
+				roomDetails.getMaxGuests(),
+				roomDetails.getAmenities(),
+				roomDetails.getIsAvailable());
+
+	}
+
+	public String bookRoom(Long hotel_id, Long room_id) throws NotFoundException {
+		Optional<List<Rooms>> rooms = roomRepo.findAllByHotelId(hotel_id);
+		if (rooms.isEmpty()) {
+			throw new NotFoundException();
+		}
+		List<Rooms> availableRooms = rooms.get();
+		Rooms roomToBook = new Rooms();
+		for (Rooms room : availableRooms) {
+			if (room.getId() == room_id) {
+				roomToBook = room;
+				if (roomToBook.getIsAvailable() == false) {
+					return "Room is not available";
+				}
+				roomToBook.setIsAvailable(false);
+				roomRepo.save(roomToBook);
+			}
+
+		}
+		return "Room booked successfully";
+
+	}
+	public List<Rooms> availableRoomInHotel(Long hotel_id) {
+		List<Rooms> hotelRooms = roomRepo.findAllByHotelId(hotel_id).get();
+		List<Rooms> availableRooms = new ArrayList<Rooms>();
+		for(Rooms room : hotelRooms) {
+			if(room.getIsAvailable() == true) {
+				availableRooms.add(room);
+			}
+		}
+		return availableRooms;
+	}
 }
