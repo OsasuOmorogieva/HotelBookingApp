@@ -31,6 +31,15 @@ public class Rooms {
 	private int maxGuests;
 	@Column(name="\"amenities\"")
 	private String amenities;
+	private Boolean isAvailable;
+	public Boolean getIsAvailable() {
+		return isAvailable;
+	}
+
+	public void setIsAvailable(Boolean isAvalable) {
+		this.isAvailable = isAvalable;
+	}
+
 	@JsonIgnore
 	@OneToOne(mappedBy="room")
 	private RoomAvailability roomAvailability;
@@ -41,7 +50,7 @@ public class Rooms {
 	@OneToMany(mappedBy ="room")
 	private List<Bookings> bookings;
 	public Rooms(long id, Hotels hotel, String type, String description, double price, int maxGuests,
-			String amenities) {
+			String amenities,RoomAvailability roomAvailability) {
 		super();
 		this.id = id;
 		this.hotel = hotel;
@@ -50,6 +59,7 @@ public class Rooms {
 		this.price = price;
 		this.maxGuests = maxGuests;
 		this.amenities = amenities;
+		this.roomAvailability = roomAvailability;
 	}
 	
 	public long getId() {
@@ -88,6 +98,14 @@ public class Rooms {
 	public void setMaxGuests(int maxGuests) {
 		this.maxGuests = maxGuests;
 	}
+	public RoomAvailability getRoomAvailability() {
+		return roomAvailability;
+	}
+
+	public void setRoomAvailability(RoomAvailability roomAvailability) {
+		this.roomAvailability = roomAvailability;
+	}
+
 	public String getAmenities() {
 		return amenities;
 	}
@@ -100,6 +118,10 @@ public class Rooms {
 		return "Rooms [id=" + id + ", hotel=" + hotel + ", type=" + type + ", description=" + description
 				+ ", price=" + price + ", maxGuests=" + maxGuests + ", amenities=" + amenities + "]";
 	}
+
+	
+		
+	
 	
 
 }

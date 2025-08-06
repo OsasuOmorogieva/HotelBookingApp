@@ -18,14 +18,14 @@ import jakarta.persistence.Table;
 public class Hotels {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	private String name;
 	private String description;
 	private String address;
 	private String city;
 	private double rating;
 	@ManyToOne
-	@JsonIgnore
+	//@JsonIgnore
 	@JoinColumn(name = "owner_id", nullable = false) // This is the FK column in the Hotels table
 	private Users owner;
 	
@@ -44,7 +44,7 @@ public class Hotels {
 
 	}
 
-	public Hotels(long id, String name, String description, String address, String city, double rating, Users owner) {
+	public Hotels(Long id, String name, String description, String address, String city, double rating, Users owner) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -55,7 +55,7 @@ public class Hotels {
 		this.owner = owner;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -102,7 +102,7 @@ public class Hotels {
 	public void setRating(double rating) {
 		this.rating = rating;
 	}
-
+	//@JsonIgnore
 	public Users getOwner() {
 		return owner;
 	}

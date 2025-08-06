@@ -56,7 +56,7 @@ public class RoomAvailability {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	public boolean isAvailable() {
+	public boolean getIsAvailable() {
 		return isAvailable;
 	}
 	public void setAvailable(boolean isAvailable) {
