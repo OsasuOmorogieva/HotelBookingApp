@@ -1,0 +1,30 @@
+jwt:
+  secret: IQYQgjIMoH+slEtHNHI9q8tcOB6wicx9KNZQ2C1Ad2U=
+  expiration: 86_400_000
+  issuer: 'OsasApp'
+  audience: HotelBookingApp
+  prefix: 'Bearer'
+  excluded.urls: >
+      - /user/login
+      - /user/register
+      - /user/passwordReset
+ 
+  
+# Client Configuration  
+client:
+  url: http://localhost:3000
+  email:
+    verify:
+      param: user/verifyEmail
+      expiration: 86_400_000
+    reset:
+      param: user/resetPassword
+      expiration: 86_400_000
+      
+# H2 Server Configuration 
+h2.server:
+  params: >
+    -tcp, 
+    -tcpAllowOthers, 
+    -tcpPort, 
+    9090

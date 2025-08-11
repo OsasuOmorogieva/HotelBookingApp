@@ -19,6 +19,7 @@ import com.example.HotelBookingApp.DTO.RoomDTO;
 import com.example.HotelBookingApp.Service.UserService;
 import com.example.HotelBookingApp.model.Rooms;
 import com.example.HotelBookingApp.model.Users;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @RestController
 @RequestMapping("/user")
@@ -63,4 +64,16 @@ public class UserController {
 		List<Rooms> availableRooms = userService.availableRoomInHotel(hotel_id);
 		return new ResponseEntity<>(availableRooms, HttpStatus.OK);
 	}
+	
+	@PostMapping("/resetPassword")
+	public ResponseEntity<?> resetPassword (@RequestBody JsonNode json){
+		userService.resetPassword(json.get("password").asText());
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	@PostMapping("/sendResetPasswordEmail")
+	public ResponseEntity<?> sendResetPasswordEmail(@RequestBody JsonNode json){
+		userService.sendResetPasswordEmail(json.get("email").asText());
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
 }

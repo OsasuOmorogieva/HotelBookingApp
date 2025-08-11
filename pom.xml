@@ -60,7 +60,65 @@
     <artifactId>h2</artifactId>
     <scope>runtime</scope>
 </dependency>
+<!-- For sending emails -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-mail</artifactId>
+</dependency>
 
+<!-- Thymeleaf template engine -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
+
+<!-- Optional: Thymeleaf extras (for Spring Security expressions in templates) -->
+<dependency>
+    <groupId>org.thymeleaf.extras</groupId>
+    <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+</dependency>
+
+<!-- General Spring Boot starter -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+</dependency>
+<!-- Core JJWT API -->
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-api</artifactId>
+    <version>0.12.6</version>
+</dependency>
+
+<!-- Implementation for signing and parsing JWTs -->
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-impl</artifactId>
+    <version>0.12.6</version>
+    <scope>runtime</scope>
+</dependency>
+
+<!-- Jackson serializer for JSON processing -->
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-jackson</artifactId>
+    <version>0.12.6</version>
+    <scope>runtime</scope>
+</dependency>
+<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+    <groupId>com.auth0</groupId>
+    <artifactId>java-jwt</artifactId>
+    <version>4.4.0</version>
+</dependency>
 	</dependencies>
 
 	<build>

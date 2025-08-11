@@ -9,10 +9,23 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        
+  mail:
+    username: osasuomo@yahoo.com
+    password: wdrl qpit htil njal
+    host: smtp.gmail.com
+    port: 587
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 
