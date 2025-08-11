@@ -2,7 +2,6 @@ package com.example.HotelBookingApp.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,7 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.HotelBookingApp.DTO.HotelDTO;
-import com.example.HotelBookingApp.DTO.RoomDTO;
 import com.example.HotelBookingApp.Repository.HotelRepository;
 import com.example.HotelBookingApp.Repository.RoomsRepo;
 import com.example.HotelBookingApp.Repository.UserRepository;
@@ -122,59 +120,7 @@ public class UserService {
 				.collect(Collectors.toList());
 	}
 
-	public List<RoomDTO> getAllRooms(Long hotel_id) throws NotFoundException {
-		Optional<List<Rooms>> rooms = roomRepo.findAllByHotelId(hotel_id);
-
-		if (rooms.isEmpty()) {
-			throw new NotFoundException();
-		}
-
-		List<Rooms> hotelRooms = rooms.get();
-
-		return hotelRooms.stream().map(room -> {
-			Hotels hotel = room.getHotel();
-
-			HotelDTO hotelDTO = new HotelDTO(
-					hotel.getName(),
-					hotel.getAddress(),
-					hotel.getDescription(),
-					hotel.getCity(),
-					hotel.getRating());
-
-			return new RoomDTO(
-					room.getId(), 
-					hotelDTO,
-					room.getType(), 
-					room.getDescription(),
-					room.getPrice(),
-					room.getMaxGuests(), 
-					room.getAmenities(),
-					room.getIsAvailable());
-			}).collect(Collectors.toList());
-	}
-
-	public RoomDTO getRoom(Long id) throws NotFoundException {
-		Rooms roomDetails = roomRepo.findById(id).orElseThrow(() -> new NotFoundException());
-		Hotels hotel = roomDetails.getHotel();
-		HotelDTO hotelDTO = new HotelDTO(
-				hotel.getName(), 
-				hotel.getAddress(), 
-				hotel.getDescription(),
-				hotel.getCity(),
-				hotel.getRating());
-
-		return new RoomDTO(
-				roomDetails.getId(),
-				hotelDTO,
-				roomDetails.getType(),
-				roomDetails.getDescription(),
-				roomDetails.getPrice(),
-				roomDetails.getMaxGuests(),
-				roomDetails.getAmenities(),
-				roomDetails.getIsAvailable());
-
-	}
-
+	
 	public String bookRoom(Long hotel_id, Long room_id) throws NotFoundException {
 		Optional<List<Rooms>> rooms = roomRepo.findAllByHotelId(hotel_id);
 		if (rooms.isEmpty()) {
@@ -196,14 +142,5 @@ public class UserService {
 		return "Room booked successfully";
 
 	}
-	public List<Rooms> availableRoomInHotel(Long hotel_id) {
-		List<Rooms> hotelRooms = roomRepo.findAllByHotelId(hotel_id).get();
-		List<Rooms> availableRooms = new ArrayList<Rooms>();
-		for(Rooms room : hotelRooms) {
-			if(room.getIsAvailable() == true) {
-				availableRooms.add(room);
-			}
-		}
-		return availableRooms;
-	}
+	
 }

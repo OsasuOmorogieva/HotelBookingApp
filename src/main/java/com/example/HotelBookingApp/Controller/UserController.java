@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.HotelBookingApp.DTO.HotelDTO;
-import com.example.HotelBookingApp.DTO.RoomDTO;
 import com.example.HotelBookingApp.Service.UserService;
-import com.example.HotelBookingApp.model.Rooms;
 import com.example.HotelBookingApp.model.Users;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -36,35 +34,11 @@ public class UserController {
 		return new ResponseEntity<>(newUser, HttpStatus.CREATED);
 	}
 	
-	@GetMapping("/viewAllHotels")
-	public ResponseEntity<List<HotelDTO>> viewAllHotels(){
-		List<HotelDTO> hotels = userService.viewAllHotels();
-		return new ResponseEntity<>(hotels, HttpStatus.OK);
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@RequestBody Users user){
+		String token = userService.login(user);
+		 return new ResponseEntity<>(token,HttpStatus.OK);
 	}
-	@GetMapping("/getAllRooms/{hotel_id}")
-		public ResponseEntity<List<RoomDTO>> getAllRooms(@PathVariable Long hotel_id) throws NotFoundException{
-			List<RoomDTO> rooms = userService.getAllRooms(hotel_id);
-			return new ResponseEntity<>(rooms, HttpStatus.OK);
-			
-		}
-	@GetMapping("/getRoom/{id}")
-	public ResponseEntity<RoomDTO> getRoom(@PathVariable Long id) throws NotFoundException{
-		RoomDTO roomDetails =userService.getRoom(id);
-		return new ResponseEntity<>(roomDetails, HttpStatus.OK);
-	}
-	
-	@GetMapping("/bookRoom/{hotel_id}/{room_id}")
-	public ResponseEntity<?> bookRoom(@PathVariable Long hotel_id, @PathVariable Long room_id) throws NotFoundException{
-		 String bookingUpdate = userService.bookRoom(hotel_id, room_id);
-		return new ResponseEntity<>( bookingUpdate, HttpStatus.OK);
-	}
-	
-	@GetMapping("/availableRoom/{hotel_id}")
-	public ResponseEntity<List<Rooms>> availableRoomInHotel(@PathVariable Long hotel_id){
-		List<Rooms> availableRooms = userService.availableRoomInHotel(hotel_id);
-		return new ResponseEntity<>(availableRooms, HttpStatus.OK);
-	}
-	
 	@PostMapping("/resetPassword")
 	public ResponseEntity<?> resetPassword (@RequestBody JsonNode json){
 		userService.resetPassword(json.get("password").asText());
@@ -75,5 +49,21 @@ public class UserController {
 		userService.sendResetPasswordEmail(json.get("email").asText());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+	
+	@GetMapping("/viewAllHotels")
+	public ResponseEntity<List<HotelDTO>> viewAllHotels(){
+		List<HotelDTO> hotels = userService.viewAllHotels();
+		return new ResponseEntity<>(hotels, HttpStatus.OK);
+	}
+	
+	
+	@GetMapping("/bookRoom/{hotel_id}/{room_id}")
+	public ResponseEntity<?> bookRoom(@PathVariable Long hotel_id, @PathVariable Long room_id) throws NotFoundException{
+		 String bookingUpdate = userService.bookRoom(hotel_id, room_id);
+		return new ResponseEntity<>( bookingUpdate, HttpStatus.OK);
+	}
+	
+	
+	
 	
 }

@@ -16,7 +16,7 @@ public class MyUserDetails implements UserDetails {
 	private Optional<Users>user;
 
 	public MyUserDetails(Optional<Users> user2) {
-		// TODO Auto-generated constructor stub
+		this.user = user2;
 	}
 
 	@Override
