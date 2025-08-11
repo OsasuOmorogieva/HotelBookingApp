@@ -1,7 +1,5 @@
 package com.example.HotelBookingApp.Controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.HotelBookingApp.DTO.HotelDTO;
 import com.example.HotelBookingApp.Service.UserService;
 import com.example.HotelBookingApp.model.Users;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -50,11 +47,7 @@ public class UserController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	@GetMapping("/viewAllHotels")
-	public ResponseEntity<List<HotelDTO>> viewAllHotels(){
-		List<HotelDTO> hotels = userService.viewAllHotels();
-		return new ResponseEntity<>(hotels, HttpStatus.OK);
-	}
+	
 	
 	
 	@GetMapping("/bookRoom/{hotel_id}/{room_id}")

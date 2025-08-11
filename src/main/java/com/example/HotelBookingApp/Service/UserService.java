@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,14 +16,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.HotelBookingApp.DTO.HotelDTO;
-import com.example.HotelBookingApp.Repository.HotelRepository;
 import com.example.HotelBookingApp.Repository.RoomsRepo;
 import com.example.HotelBookingApp.Repository.UserRepository;
 import com.example.HotelBookingApp.exception.EmailExistException;
 import com.example.HotelBookingApp.exception.UserExistException;
 import com.example.HotelBookingApp.exception.UserNotFoundException;
-import com.example.HotelBookingApp.model.Hotels;
 import com.example.HotelBookingApp.model.Rooms;
 import com.example.HotelBookingApp.model.Users;
 import com.example.HotelBookingApp.security.JWTService;
@@ -40,8 +36,6 @@ public class UserService {
 	@Autowired
 	AuthenticationManager authManager;
 
-	@Autowired
-	HotelRepository hotelRepo;
 
 	@Autowired
 	RoomsRepo roomRepo;
@@ -108,17 +102,7 @@ public class UserService {
 		this.emailService.sendResetPasswordEmail(user);
 		logger.debug("Email doesn't exist{}", email);
 	}
-	public List<HotelDTO> viewAllHotels() {
-
-		List<Hotels> hotels = hotelRepo.findAll();
-		return hotels.stream().map(hotel -> new HotelDTO(
-				hotel.getName(),
-				hotel.getDescription(),
-				hotel.getAddress(),
-				hotel.getCity(), 
-				hotel.getRating()))
-				.collect(Collectors.toList());
-	}
+	
 
 	
 	public String bookRoom(Long hotel_id, Long room_id) throws NotFoundException {
