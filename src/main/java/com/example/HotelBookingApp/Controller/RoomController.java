@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.HotelBookingApp.DTO.RoomDTO;
 import com.example.HotelBookingApp.Service.RoomService;
 import com.example.HotelBookingApp.model.Bookings;
+import com.example.HotelBookingApp.model.Payments;
 import com.example.HotelBookingApp.model.Rooms;
 
 @RestController
@@ -47,5 +48,15 @@ public ResponseEntity<List<Rooms>> availableRoomInHotel(@PathVariable Long hotel
 public ResponseEntity<?> bookRoom(@RequestBody Bookings booking) throws NotFoundException{
 	 String bookingUpdate = roomService.bookRoom(booking);
 	return new ResponseEntity<>( bookingUpdate, HttpStatus.OK);
+}
+@PostMapping("/cancelBooking")
+public ResponseEntity<String> cancelBooking(@RequestBody Bookings booking) throws NotFoundException{
+	String bookingUpdate = roomService.cancelBooking(booking);
+	return new ResponseEntity<>(bookingUpdate, HttpStatus.OK);
+}
+@PostMapping("/payment")
+public ResponseEntity<String> payment(@RequestBody Payments payment) throws NotFoundException{
+	String paymentUpdate = roomService.payment(payment);
+	return new ResponseEntity<>(paymentUpdate, HttpStatus.OK);
 }
 }

@@ -15,10 +15,12 @@ import org.springframework.stereotype.Service;
 import com.example.HotelBookingApp.DTO.HotelDTO;
 import com.example.HotelBookingApp.DTO.RoomDTO;
 import com.example.HotelBookingApp.Repository.BookingRepository;
+import com.example.HotelBookingApp.Repository.PaymentRepository;
 import com.example.HotelBookingApp.Repository.RoomsRepo;
 import com.example.HotelBookingApp.Repository.UserRepository;
 import com.example.HotelBookingApp.model.Bookings;
 import com.example.HotelBookingApp.model.Hotels;
+import com.example.HotelBookingApp.model.Payments;
 import com.example.HotelBookingApp.model.Rooms;
 import com.example.HotelBookingApp.model.Users;
 
@@ -34,6 +36,9 @@ public class RoomService {
 	
 	@Autowired
 	UserRepository userRepo;
+	
+	@Autowired 
+	PaymentRepository paymentRepo;
 
 	public List<RoomDTO> getAllRooms(Long hotel_id) throws NotFoundException {
 		Optional<List<Rooms>> rooms = roomRepo.findAllByHotelId(hotel_id);
@@ -128,5 +133,48 @@ public class RoomService {
 		
 		return "Room booked successfully";
 
+	}
+	public String cancelBooking(Bookings booking) throws NotFoundException {
+		Long bookingId = booking.getId();
+		Optional<Bookings> bookingInfo =bookingRepo.findById(bookingId);
+		if(!bookingInfo.isPresent()) {
+			return "No such booking details found";
+		}
+		Bookings bookedRoom = bookingInfo.get();
+		Rooms room =bookedRoom.getRoom();
+		room.setIsAvailable(true);
+		roomRepo.save(room);
+		bookedRoom.setStatus("canceled");
+		bookingRepo.save(bookedRoom);
+		
+		return "Booking canceled successfully";
+		
+	}
+	public String payment(Payments payment) throws NotFoundException {
+		long bookingId = payment.getBooking().getId();
+		Optional<Bookings> booking = bookingRepo.findById(bookingId);
+		if(booking.isEmpty()) {
+			throw new NotFoundException();
+		}
+		Optional<Payments>optPayment =paymentRepo.findByBookingId(bookingId);
+		if(optPayment.isPresent() && "paid".equals(optPayment.get().getStatus())) {
+			return "Payment made already for room";
+		}
+		
+		double price = booking.get().getTotalPrice();
+		if(payment.getAmount()<price) {
+			payment.setStatus("failed");
+			payment.setAmount(price);
+			payment.setCreatedAt(LocalDateTime.now());
+			return "insufficient payment amount";
+			
+		}
+		payment.setAmount(price);
+		booking.get().setStatus("confirmed");
+		payment.setCreatedAt(LocalDateTime.now());
+		payment.setStatus("paid");
+		paymentRepo.save(payment);
+		return "Payment successful";
+		
 	}
 }
