@@ -1,5 +1,7 @@
 package com.example.HotelBookingApp.Service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,13 +9,18 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.HotelBookingApp.DTO.HotelDTO;
 import com.example.HotelBookingApp.DTO.RoomDTO;
+import com.example.HotelBookingApp.Repository.BookingRepository;
 import com.example.HotelBookingApp.Repository.RoomsRepo;
+import com.example.HotelBookingApp.Repository.UserRepository;
+import com.example.HotelBookingApp.model.Bookings;
 import com.example.HotelBookingApp.model.Hotels;
 import com.example.HotelBookingApp.model.Rooms;
+import com.example.HotelBookingApp.model.Users;
 
 
 @Service
@@ -21,6 +28,12 @@ public class RoomService {
 	
 	@Autowired
 	RoomsRepo roomRepo;
+	
+	@Autowired 
+	BookingRepository bookingRepo;
+	
+	@Autowired
+	UserRepository userRepo;
 
 	public List<RoomDTO> getAllRooms(Long hotel_id) throws NotFoundException {
 		Optional<List<Rooms>> rooms = roomRepo.findAllByHotelId(hotel_id);
@@ -84,5 +97,36 @@ public class RoomService {
 			}
 		}
 		return availableRooms;
+	}
+	public String bookRoom(Bookings booking) throws NotFoundException {
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		Users user = userRepo.findByUsername(username).get();
+		Rooms room = booking.getRoom();
+		Long roomId = room.getId();
+		Optional<Rooms> optRoomToBook = roomRepo.findById(roomId);
+		if (optRoomToBook.isEmpty()) {
+			throw new NotFoundException();
+		}
+		Rooms roomToBook = optRoomToBook.get();
+				if (roomToBook.getIsAvailable() == false) {
+					return "Room is not available";
+				}
+				roomToBook.setIsAvailable(false);
+				
+			
+			booking.setUser(user);
+			booking.setRoom(roomToBook);
+			booking.setStatus("pending");
+			long days = ChronoUnit.DAYS.between(booking.getCheckIn(), booking.getCheckOut());
+			double price = days * roomToBook.getPrice();
+			booking.setTotalPrice(price);
+			booking.setCreatedAt(LocalDateTime.now());
+			bookingRepo.save(booking);
+			roomRepo.save(roomToBook);
+			
+			
+		
+		return "Room booked successfully";
+
 	}
 }

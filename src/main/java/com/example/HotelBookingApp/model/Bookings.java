@@ -1,7 +1,7 @@
 package com.example.HotelBookingApp.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import org.hibernate.annotations.CurrentTimestamp;
 
@@ -32,10 +32,10 @@ public class Bookings {
 	@OneToOne(mappedBy="booking")
 	private Payments payment;
 	@Column(name="\"check_in\"")
-	private Date checkIn;
+	private LocalDate checkIn;
 	
 	@Column(name="\"check_out\"")
-	private Date checkOut;
+	private LocalDate checkOut;
 	@Column(name="\"total_price\"")
 	private double totalPrice;
 	private String status;
@@ -47,7 +47,7 @@ public class Bookings {
 	
 	public Bookings() {
 	}
-	public Bookings(long id, Users user, Rooms room, Date checkIn, Date checkOut, double totalPrice, String status,
+	public Bookings(long id, Users user, Rooms room, LocalDate checkIn, LocalDate checkOut, double totalPrice, String status,
 			LocalDateTime createdAt) {
 		super();
 		this.id = id;
@@ -71,16 +71,16 @@ public class Bookings {
 	public void setUser(Users user) {
 		this.user = user;
 	}
-	public Date getCheckIn() {
+	public LocalDate getCheckIn() {
 		return checkIn;
 	}
-	public void setCheckIn(Date checkIn) {
+	public void setCheckIn(LocalDate checkIn) {
 		this.checkIn = checkIn;
 	}
-	public Date getCheckOut() {
+	public LocalDate getCheckOut() {
 		return checkOut;
 	}
-	public void setCheckOut(Date checkOut) {
+	public void setCheckOut(LocalDate checkOut) {
 		this.checkOut = checkOut;
 	}
 	public double getTotalPrice() {

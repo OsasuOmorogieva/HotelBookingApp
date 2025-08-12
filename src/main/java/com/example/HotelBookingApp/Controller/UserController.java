@@ -1,12 +1,9 @@
 package com.example.HotelBookingApp.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,11 +47,7 @@ public class UserController {
 	
 	
 	
-	@GetMapping("/bookRoom/{hotel_id}/{room_id}")
-	public ResponseEntity<?> bookRoom(@PathVariable Long hotel_id, @PathVariable Long room_id) throws NotFoundException{
-		 String bookingUpdate = userService.bookRoom(hotel_id, room_id);
-		return new ResponseEntity<>( bookingUpdate, HttpStatus.OK);
-	}
+	
 	
 	
 	

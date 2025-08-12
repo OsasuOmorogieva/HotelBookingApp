@@ -9,11 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.HotelBookingApp.DTO.RoomDTO;
 import com.example.HotelBookingApp.Service.RoomService;
+import com.example.HotelBookingApp.model.Bookings;
 import com.example.HotelBookingApp.model.Rooms;
 
 @RestController
@@ -39,5 +42,10 @@ public ResponseEntity<RoomDTO> getRoom(@PathVariable Long id) throws NotFoundExc
 public ResponseEntity<List<Rooms>> availableRoomInHotel(@PathVariable Long hotel_id){
 	List<Rooms> availableRooms = roomService.availableRoomInHotel(hotel_id);
 	return new ResponseEntity<>(availableRooms, HttpStatus.OK);
+}
+@PostMapping("/bookRoom")
+public ResponseEntity<?> bookRoom(@RequestBody Bookings booking) throws NotFoundException{
+	 String bookingUpdate = roomService.bookRoom(booking);
+	return new ResponseEntity<>( bookingUpdate, HttpStatus.OK);
 }
 }

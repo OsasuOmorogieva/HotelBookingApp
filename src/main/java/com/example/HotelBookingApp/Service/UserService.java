@@ -2,13 +2,10 @@ package com.example.HotelBookingApp.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,7 +18,6 @@ import com.example.HotelBookingApp.Repository.UserRepository;
 import com.example.HotelBookingApp.exception.EmailExistException;
 import com.example.HotelBookingApp.exception.UserExistException;
 import com.example.HotelBookingApp.exception.UserNotFoundException;
-import com.example.HotelBookingApp.model.Rooms;
 import com.example.HotelBookingApp.model.Users;
 import com.example.HotelBookingApp.security.JWTService;
 
@@ -105,26 +101,6 @@ public class UserService {
 	
 
 	
-	public String bookRoom(Long hotel_id, Long room_id) throws NotFoundException {
-		Optional<List<Rooms>> rooms = roomRepo.findAllByHotelId(hotel_id);
-		if (rooms.isEmpty()) {
-			throw new NotFoundException();
-		}
-		List<Rooms> availableRooms = rooms.get();
-		Rooms roomToBook = new Rooms();
-		for (Rooms room : availableRooms) {
-			if (room.getId() == room_id) {
-				roomToBook = room;
-				if (roomToBook.getIsAvailable() == false) {
-					return "Room is not available";
-				}
-				roomToBook.setIsAvailable(false);
-				roomRepo.save(roomToBook);
-			}
 
-		}
-		return "Room booked successfully";
-
-	}
 	
 }
