@@ -1,17 +1,20 @@
 package com.example.HotelBookingApp.Controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.HotelBookingApp.Service.UserService;
-import com.example.HotelBookingApp.model.Hotels;
 import com.example.HotelBookingApp.model.Users;
+import com.example.HotelBookingApp.model.Wishlists;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @RestController
@@ -44,10 +47,11 @@ public class UserController {
 		userService.sendResetPasswordEmail(json.get("email").asText());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	@PostMapping("/addWishlist")
-	public ResponseEntity<String> addWishlist(@RequestBody Hotels hotel){
-		String newWishlist = userService.addWishList(hotel);
-		return new ResponseEntity<>(newWishlist, HttpStatus.CREATED);
+	
+	@GetMapping("/getWishlist")
+	public ResponseEntity<List<Wishlists>> getWishlist(){
+		List<Wishlists> wishlist =userService.getWishlist();
+		return new ResponseEntity<>(wishlist, HttpStatus.OK);
 	}
 	
 	

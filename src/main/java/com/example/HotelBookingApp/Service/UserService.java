@@ -2,6 +2,7 @@ package com.example.HotelBookingApp.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,6 @@ import com.example.HotelBookingApp.Repository.WishlistsRepository;
 import com.example.HotelBookingApp.exception.EmailExistException;
 import com.example.HotelBookingApp.exception.UserExistException;
 import com.example.HotelBookingApp.exception.UserNotFoundException;
-import com.example.HotelBookingApp.model.Hotels;
 import com.example.HotelBookingApp.model.Users;
 import com.example.HotelBookingApp.model.Wishlists;
 import com.example.HotelBookingApp.security.JWTService;
@@ -109,21 +109,16 @@ public class UserService {
 		this.emailService.sendResetPasswordEmail(user);
 		logger.debug("Email doesn't exist{}", email);
 	}
-	public String addWishList(Hotels hotel){
+	
+	public List<Wishlists> getWishlist(){
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		Wishlists wishlist = new Wishlists();
-		Users user = userRepo.findByUsername(username).orElseThrow(()-> new UserNotFoundException(String.format("username does not exist", username)));
-		Hotels wishedHotel = hotelRepo.findByNameIgnoreCaseAndCityIgnoreCase(hotel.getName(), hotel.getCity()).orElseThrow(()-> new UserNotFoundException(String.format("Hotel does not exist", hotel.getName())));
+		Users user = userRepo.findByUsername(username).orElseThrow(()->new UserNotFoundException(String.format("username does not exist", username)));
+		Long userId = user.getId();
+		List<Wishlists> wishlists = wishlistRepo.findByUserId(userId);
+		return wishlists;
 		
-		wishlist.setUser(user);
-		wishlist.setHotel(wishedHotel);
-		wishlist.setCreatedAt(Timestamp.from(Instant.now()));
-		wishlistRepo.save(wishlist);
-		return "WishList updated successfully";
 		
 	}
-
-	
 
 	
 }
