@@ -10,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -159,8 +158,8 @@ public class Users {
 	private List<Bookings>bookings;
 	
 	@JsonIgnore
-	@OneToOne(mappedBy="user")
-	private Reviews review;
+	@OneToMany(mappedBy="user")
+	private List<Reviews> reviews;
 	@JsonIgnore
 	@OneToMany(mappedBy="user")
 	private List<Wishlists> wishlist;

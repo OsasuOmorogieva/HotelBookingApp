@@ -53,6 +53,7 @@ public class UserService {
 	EmailService emailService;
 	
 
+
 	public Users register(Users user) {
 		user.setUsername(user.getUsername().toLowerCase());
 		user.setEmail(user.getEmail());
@@ -116,9 +117,8 @@ public class UserService {
 		Long userId = user.getId();
 		List<Wishlists> wishlists = wishlistRepo.findByUserId(userId);
 		return wishlists;
-		
-		
 	}
-
+	
+	
 	
 }

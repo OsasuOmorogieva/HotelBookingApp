@@ -2,7 +2,9 @@ package com.example.HotelBookingApp.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.HotelBookingApp.DTO.HotelDTO;
 import com.example.HotelBookingApp.Repository.HotelRepository;
+import com.example.HotelBookingApp.Repository.ReviewsRepository;
 import com.example.HotelBookingApp.Repository.UserRepository;
 import com.example.HotelBookingApp.Repository.WishlistsRepository;
+import com.example.HotelBookingApp.exception.HotelNotFoundException;
 import com.example.HotelBookingApp.exception.UserNotFoundException;
 import com.example.HotelBookingApp.model.Hotels;
+import com.example.HotelBookingApp.model.Reviews;
 import com.example.HotelBookingApp.model.Users;
 import com.example.HotelBookingApp.model.Wishlists;
 
@@ -29,6 +34,9 @@ public class HotelService {
 	
 	@Autowired
 	WishlistsRepository wishlistRepo;
+	@Autowired
+	ReviewsRepository reviewRepo;
+	
 	
 	
 	public List<HotelDTO> viewAllHotels() {
@@ -72,4 +80,25 @@ public class HotelService {
 		wishlistRepo.deleteByHotelId(hotelId);
 		return String.format("%s %s has been removed from wishlist successfully", hotel.getName(), hotel.getCity());
 	}
+	 public String addReview(Reviews review) {
+			String username = SecurityContextHolder.getContext().getAuthentication().getName();
+			Users user = userRepo.findByUsername(username).orElseThrow(()-> new UserNotFoundException(String.format("username does not exist", username)));
+			Long hotelId = review.getHotel().getId();
+			Optional<Reviews> oldReview = reviewRepo.findByUserIdAndHotelId(user.getId(), hotelId);
+			if(oldReview.isPresent()) {
+				return "User can only add one review per hotel, delete previous review to add new one";
+			}
+			Hotels hotel = hotelRepo.findById(hotelId).orElseThrow(()->new HotelNotFoundException(String.format("Hotel does not exist", review.getHotel())));
+			review.setUser(user);
+			review.setHotel(hotel);
+			review.setComment(review.getComment());
+			review.setRating(review.getRating());
+			review.setCreatedAt(LocalDateTime.now());
+			reviewRepo.save(review);
+			return "Thank you for your review";
+		}
+	 public List<Reviews> getReviews(Long hotelId){
+		List<Reviews> reviews =reviewRepo.findByHotelId(hotelId);
+		 return reviews;
+	 }
 }
