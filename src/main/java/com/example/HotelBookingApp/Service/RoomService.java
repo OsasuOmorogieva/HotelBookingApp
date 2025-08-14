@@ -108,17 +108,22 @@ public class RoomService {
 		Users user = userRepo.findByUsername(username).get();
 		Rooms room = booking.getRoom();
 		Long roomId = room.getId();
-		Optional<Rooms> optRoomToBook = roomRepo.findById(roomId);
+		//boolean isConflict = false;
+		Optional<Rooms> optRoomToBook = roomRepo.findById(roomId);		
 		if (optRoomToBook.isEmpty()) {
 			throw new NotFoundException();
 		}
 		Rooms roomToBook = optRoomToBook.get();
-				if (roomToBook.getIsAvailable() == false) {
-					return "Room is not available";
-				}
-				roomToBook.setIsAvailable(false);
-				
-			
+		List<Bookings> conflicts = bookingRepo.findConflictingBookings(
+		        roomToBook.getId(),
+		        booking.getCheckIn(),
+		        booking.getCheckOut()
+		);
+
+		if (!conflicts.isEmpty()) {
+		    return "Room is already booked for these dates";
+		}
+		
 			booking.setUser(user);
 			booking.setRoom(roomToBook);
 			booking.setStatus("pending");
@@ -156,9 +161,22 @@ public class RoomService {
 		if(booking.isEmpty()) {
 			throw new NotFoundException();
 		}
+		Bookings activeBooking =booking.get();
+		Rooms roomToBook = activeBooking.getRoom();
 		Optional<Payments>optPayment =paymentRepo.findByBookingId(bookingId);
-		if(optPayment.isPresent() && "paid".equals(optPayment.get().getStatus())) {
-			return "Payment made already for room";
+		if(optPayment.isPresent() && "paid".equals(optPayment.get().getStatus()) && "confirmed".equals(activeBooking.getStatus())) {
+			return "Room not available";
+		}
+		List<Bookings> conflicts = bookingRepo.findConflictingBookings(
+		        roomToBook.getId(),
+		        activeBooking.getCheckIn(),
+		        activeBooking.getCheckOut()
+		);
+
+		if (!conflicts.isEmpty()) {
+			activeBooking.setStatus("Canceled");
+			bookingRepo.save(activeBooking);
+		    return "Room is already booked for these dates";
 		}
 		
 		double price = booking.get().getTotalPrice();
@@ -166,6 +184,7 @@ public class RoomService {
 			payment.setStatus("failed");
 			payment.setAmount(price);
 			payment.setCreatedAt(LocalDateTime.now());
+
 			return "insufficient payment amount";
 			
 		}
