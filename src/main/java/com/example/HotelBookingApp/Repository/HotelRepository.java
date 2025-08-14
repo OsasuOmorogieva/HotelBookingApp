@@ -10,6 +10,7 @@ public interface HotelRepository extends JpaRepository<Hotels, Long> {
 	Optional<Hotels> findByOwnerId(Long ownerId);
 
 	Optional<Hotels> findByNameIgnoreCaseAndAddressIgnoreCaseAndCityIgnoreCase(String name, String address, String city);
+	Optional<Hotels> findByNameIgnoreCaseAndCityIgnoreCase(String name, String city);
 
 
 

@@ -13,12 +13,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.HotelBookingApp.Repository.HotelRepository;
 import com.example.HotelBookingApp.Repository.RoomsRepo;
 import com.example.HotelBookingApp.Repository.UserRepository;
+import com.example.HotelBookingApp.Repository.WishlistsRepository;
 import com.example.HotelBookingApp.exception.EmailExistException;
 import com.example.HotelBookingApp.exception.UserExistException;
 import com.example.HotelBookingApp.exception.UserNotFoundException;
+import com.example.HotelBookingApp.model.Hotels;
 import com.example.HotelBookingApp.model.Users;
+import com.example.HotelBookingApp.model.Wishlists;
 import com.example.HotelBookingApp.security.JWTService;
 
 @Service
@@ -37,10 +41,17 @@ public class UserService {
 	RoomsRepo roomRepo;
 	
 	@Autowired
+	WishlistsRepository wishlistRepo;
+	
+	@Autowired
+	HotelRepository hotelRepo;
+	
+	@Autowired
 	JWTService jwtService;
 	
 	@Autowired
 	EmailService emailService;
+	
 
 	public Users register(Users user) {
 		user.setUsername(user.getUsername().toLowerCase());
@@ -98,7 +109,19 @@ public class UserService {
 		this.emailService.sendResetPasswordEmail(user);
 		logger.debug("Email doesn't exist{}", email);
 	}
-	
+	public String addWishList(Hotels hotel){
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		Wishlists wishlist = new Wishlists();
+		Users user = userRepo.findByUsername(username).orElseThrow(()-> new UserNotFoundException(String.format("username does not exist", username)));
+		Hotels wishedHotel = hotelRepo.findByNameIgnoreCaseAndCityIgnoreCase(hotel.getName(), hotel.getCity()).orElseThrow(()-> new UserNotFoundException(String.format("Hotel does not exist", hotel.getName())));
+		
+		wishlist.setUser(user);
+		wishlist.setHotel(wishedHotel);
+		wishlist.setCreatedAt(Timestamp.from(Instant.now()));
+		wishlistRepo.save(wishlist);
+		return "WishList updated successfully";
+		
+	}
 
 	
 

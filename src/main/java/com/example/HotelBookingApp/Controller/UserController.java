@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.HotelBookingApp.Service.UserService;
+import com.example.HotelBookingApp.model.Hotels;
 import com.example.HotelBookingApp.model.Users;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -43,7 +44,11 @@ public class UserController {
 		userService.sendResetPasswordEmail(json.get("email").asText());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+	@PostMapping("/addWishlist")
+	public ResponseEntity<String> addWishlist(@RequestBody Hotels hotel){
+		String newWishlist = userService.addWishList(hotel);
+		return new ResponseEntity<>(newWishlist, HttpStatus.CREATED);
+	}
 	
 	
 	

@@ -1,5 +1,10 @@
 package com.example.HotelBookingApp.model;
 
+import java.sql.Timestamp;
+
+import org.hibernate.annotations.CurrentTimestamp;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,7 +28,11 @@ public class Wishlists {
 	@JoinColumn(name="\"hotel_id\"")
 	private Hotels hotel;
 	
+	@Column(name="\"created_at\"")
+	@CurrentTimestamp
+	private Timestamp createdAt;
 	
+
 	public Wishlists() {
 	
 	}
@@ -52,9 +61,16 @@ public class Wishlists {
 	public void setHotel(Hotels hotel) {
 		this.hotel = hotel;
 	}
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(Timestamp timestamp) {
+		this.createdAt = timestamp;
+	}
 	@Override
 	public String toString() {
-		return "Wishlists [id=" + id + ", user=" + user + ", hotel=" + hotel + "]";
+		return "Wishlists [id=" + id + ", user=" + user + ", hotel=" + hotel + ", createdAt=" + createdAt + "]";
 	}
+	
 
 }
