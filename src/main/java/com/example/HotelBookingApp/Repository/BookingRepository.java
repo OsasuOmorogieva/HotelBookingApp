@@ -22,5 +22,11 @@ public interface BookingRepository extends JpaRepository<Bookings, Long> {
 	            @Param("newCheckOut") LocalDate newCheckOut
 	    );
 	
+	 @Query("SELECT b FROM Bookings b WHERE b.checkIn < :newCheckOut " +
+	           "AND b.checkOut > :newCheckIn")
+	    Optional<List<Bookings>> findConflictingDates(
+	            @Param("newCheckIn") LocalDate newCheckIn,
+	            @Param("newCheckOut") LocalDate newCheckOut
+	    );
 
 }

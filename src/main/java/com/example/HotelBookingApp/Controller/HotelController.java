@@ -3,6 +3,7 @@ package com.example.HotelBookingApp.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.HotelBookingApp.DTO.DateRange;
 import com.example.HotelBookingApp.DTO.HotelDTO;
 import com.example.HotelBookingApp.Service.HotelService;
 import com.example.HotelBookingApp.model.Hotels;
 import com.example.HotelBookingApp.model.Reviews;
+import com.example.HotelBookingApp.model.Rooms;
 
 @RestController
 @RequestMapping("/hotel")
@@ -54,5 +57,11 @@ public class HotelController {
 	public ResponseEntity<List<Reviews>> getReviews(@PathVariable Long hotelId){
 		List<Reviews> hotelReviews =hotelService.getReviews(hotelId);
 		return new ResponseEntity<>(hotelReviews, HttpStatus.FOUND);
+	}
+	
+	@PostMapping("/getAvailableRooms")
+	public ResponseEntity<List<Rooms>> getAvailableRooms(@RequestBody DateRange request) throws NotFoundException{
+		List<Rooms> availableRooms = hotelService.getAvailableRooms(request);
+		return new ResponseEntity<>(availableRooms, HttpStatus.OK);
 	}
 }

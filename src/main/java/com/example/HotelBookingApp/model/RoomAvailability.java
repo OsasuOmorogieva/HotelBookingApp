@@ -21,6 +21,9 @@ public class RoomAvailability {
 	@OneToOne
 	@JoinColumn(name="\"room_id\"")
 	private Rooms room;
+	private Date checkIn;
+	private Date checkOut;
+	
 	private Date date;
 	@Column(name="\"is_available\"")
 	private boolean isAvailable;
@@ -67,6 +70,18 @@ public class RoomAvailability {
 	}
 	public void setPrice(double price) {
 		this.price = price;
+	}
+	public Date getCheckIn() {
+		return checkIn;
+	}
+	public void setCheckIn(Date checkIn) {
+		this.checkIn = checkIn;
+	}
+	public Date getCheckOut() {
+		return checkOut;
+	}
+	public void setCheckOut(Date checkOut) {
+		this.checkOut = checkOut;
 	}
 	@Override
 	public String toString() {
