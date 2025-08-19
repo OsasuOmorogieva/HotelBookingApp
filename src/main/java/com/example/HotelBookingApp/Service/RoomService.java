@@ -196,4 +196,21 @@ public class RoomService {
 		return "Payment successful";
 		
 	}
+	public List<Rooms> searchRooms(String keyword){
+		List<Rooms> result = roomRepo.searchRooms(keyword);
+		 try {
+			 double price = Double.parseDouble(keyword);
+			 result.addAll(roomRepo.searchRoomsbyPrice(price));
+		 }catch(NumberFormatException e) {
+			 
+	}
+	try {
+		int maxGuests = Integer.parseInt(keyword);
+		result.addAll(roomRepo.searchRoomsbyMaxGuest(maxGuests));
+	}catch(NumberFormatException e) {
+		
+	}
+	return result;
+		
+	}
 }

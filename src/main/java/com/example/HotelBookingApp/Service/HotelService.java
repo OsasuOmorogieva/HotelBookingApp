@@ -142,4 +142,16 @@ public List<Rooms> getAvailableRooms(DateRange request) throws NotFoundException
 		}
 		return availableRooms;
 	 }
+public List<Hotels> searchHotels(String keyword){
+	List<Hotels>result = hotelRepo.search(keyword);
+	try {
+		double rating = Double.parseDouble(keyword);
+		result.addAll(hotelRepo.searchByRating(rating));
+	}catch(NumberFormatException e) {
+		
+	}
+	return result;
+	
+}
+ 
 }
