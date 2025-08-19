@@ -61,7 +61,7 @@ public class HotelController {
 	
 	@PostMapping("/getAvailableRooms")
 	public ResponseEntity<List<Rooms>> getAvailableRooms(@RequestBody DateRange request) throws NotFoundException{
-		List<Rooms> availableRooms = hotelService.getAvailableRooms(request);
+		List<Rooms> availableRooms = hotelService.getAvailableRooms( request);
 		return new ResponseEntity<>(availableRooms, HttpStatus.OK);
 	}
 }

@@ -115,14 +115,20 @@ public class HotelService {
 		 return reviews;
 	 }
 	 
-	 public List<Rooms> getAvailableRooms(DateRange request) throws NotFoundException {
+public List<Rooms> getAvailableRooms(DateRange request) throws NotFoundException {
 		 
-		 List<Rooms> conflictRooms = new ArrayList<>(1000000);
+		 Long hotelId = request.getHotel().getId();
+		 List<Rooms> allRooms = roomRepo.findAllByHotelId(hotelId).get();
+			 if (allRooms.isEmpty()) {
+				 System.out.println("No room found");
+		 };
+		 
 		 List<Rooms> availableRooms = new ArrayList<>(1000000);
-		 List<Rooms> allRooms = roomRepo.findAll();
+		 List<Rooms> conflictRooms = new ArrayList<>(allRooms.size());
+		 
 		Optional<List<Bookings>> optConflictingBookings = bookingRepo.findConflictingDates(request.getCheckIn(), request.getCheckOut());
 		if(optConflictingBookings.isEmpty()) {
-			throw new NotFoundException();
+			return allRooms;
 		}
 		List<Bookings> conflictingBookings = optConflictingBookings.get();
 		for(Bookings conflict : conflictingBookings) {
